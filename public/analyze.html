@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSync AI | Workspace</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-auth-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col">
+
+    <div id="page-loader" class="fixed inset-0 bg-slate-900 z-[100] flex items-center justify-center transition-opacity duration-500">
+        <div class="flex flex-col items-center gap-4">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Initialising Workspace...</p>
+        </div>
+    </div>
+
+    <div id="app-content" class="hidden flex-grow flex flex-col opacity-0 transition-opacity duration-700">
+        <nav class="p-6 border-b border-slate-800 backdrop-blur-md sticky top-0 z-30 bg-slate-900/80">
+            <div class="container mx-auto flex justify-between items-center">
+                <button onclick="window.location.href='dashboard.html'" class="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm">
+                    <i class="fas fa-chevron-left"></i> Dashboard
+                </button>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Analysis Workspace</h1>
+            </div>
+        </nav>
+
+        <main class="container mx-auto px-6 py-12 max-w-3xl flex-grow">
+            <div class="space-y-8">
+                <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700">
+                    <label class="block text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Target Job Description</label>
+                    <textarea id="job-desc" rows="6" placeholder="Paste JD here..." class="w-full bg-slate-900/50 border border-slate-700 rounded-2xl p-4 text-sm focus:outline-none focus:border-blue-500 transition-colors"></textarea>
+                </div>
+
+                <div class="bg-slate-800/50 border-2 border-dashed border-slate-700 rounded-3xl p-12 text-center group cursor-pointer" ondrop="window.handleDrop(event)" ondragover="event.preventDefault()">
+                    <i class="fas fa-file-pdf text-5xl text-slate-600 group-hover:text-blue-400 mb-4 transition-colors"></i>
+                    <h3 class="text-xl font-semibold mb-2">Upload Resume (PDF)</h3>
+                    <input type="file" id="file-input" class="hidden" accept=".pdf">
+                    <button onclick="document.getElementById('file-input').click()" class="bg-slate-700 hover:bg-slate-600 px-8 py-3 rounded-full font-bold transition-all">Select PDF</button>
+                    <p id="file-status" class="mt-4 text-xs text-emerald-400 hidden font-bold uppercase tracking-widest">PDF LOADED ✅</p>
+                </div>
+
+                <button id="btn-run-analysis" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-black text-xl transition-all disabled:opacity-30" disabled>Run AI Sync Analysis</button>
+            </div>
+
+            <div id="results" class="hidden mt-12 space-y-8">
+                <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 shadow-2xl">
+                    <div class="flex flex-col md:flex-row items-center gap-8 mb-10 pb-10 border-b border-slate-700/50">
+                        <div class="relative w-32 h-32">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle class="text-slate-700 stroke-current" stroke-width="8" cx="50" cy="50" r="40" fill="transparent"></circle>
+                                <circle id="meter-progress" class="text-emerald-400 stroke-current" stroke-width="8" stroke-linecap="round" cx="50" cy="50" r="40" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span id="meter-text" class="text-2xl font-black text-white">0%</span>
+                                <span class="text-[8px] uppercase text-slate-500 font-bold tracking-tighter">Match</span>
+                            </div>
+                        </div>
+                        <div class="text-center md:text-left font-bold text-2xl">AI Analysis Report</div>
+                    </div>
+                    <div id="ai-text" class="text-slate-300 leading-relaxed whitespace-pre-line text-sm mb-8"></div>
+                    <div id="skill-gap" class="flex flex-wrap gap-2 mb-8"></div>
+                    <div id="roadmap-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
